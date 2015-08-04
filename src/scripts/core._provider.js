@@ -32,6 +32,14 @@ _coreMod.provider('coreMod', function () {
         }
     }
 
+    function getMod() {
+        if (getConfig().mod) {
+            return _config.mod;
+        } else {
+            throw new Error('coreMod.provider: not found "mod" object in config');
+        }
+    }
+
     function getTemplate() {
         if (getConfig().template) {
             return _config.template;
@@ -42,6 +50,8 @@ _coreMod.provider('coreMod', function () {
 
     this.getConfig = getConfig;
     this.getApp = getApp;
+    this.getMod = getMod;
+    this.getTemplate = getTemplate;
 
     this.$get = function ($log) {
         $log.log('coreMod.provider.$get');
@@ -73,12 +83,16 @@ _coreMod.provider('coreMod', function () {
             },
 
             getMod: function (name) {
-                if (_config.mod && _config.mod[name]) {
-                    return _config.mod[name];
+                var mod = getMod();
+                if(!name){
+                    return mod;
+                }else if (mod[name]) {
+                    return mod[name];
                 } else {
                     throw new Error('coreMod.provider: not found config.mod:'+name);
                 }
             },
+
             configMod: function (object) {
                 if (!object) {
                     throw new Error('config object not set');
